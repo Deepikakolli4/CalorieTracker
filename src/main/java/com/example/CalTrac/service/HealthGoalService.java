@@ -94,4 +94,11 @@ public class HealthGoalService {
                     "Current and target weights must be greater than zero");
         }
     }
+    public void deleteGoal(String userId) {
+        HealthGoal goal = healthGoalRepository.findByUserId(userId)
+                .orElseThrow(() ->
+                        new IllegalArgumentException("Health goal not found"));
+
+        healthGoalRepository.delete(goal);
+    }
 }

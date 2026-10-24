@@ -58,4 +58,19 @@ public class HealthGoalController {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
     }
+    @DeleteMapping
+    public ResponseEntity<?> deleteGoal(Authentication authentication) {
+        try {
+            healthGoalService.deleteGoal(authentication.getName());
+
+            return ResponseEntity.ok(
+                    java.util.Map.of(
+                            "message", "Health goal deleted successfully"
+                    )
+            );
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(404)
+                    .body(java.util.Map.of("error", e.getMessage()));
+        }
+    }
 }
