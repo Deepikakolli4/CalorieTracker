@@ -24,6 +24,7 @@ public class FoodEntryController {
         this.foodEntryService = foodEntryService;
     }
 
+    //Food Entry Creation
     @PostMapping
     public ResponseEntity<?> createFoodEntry(@RequestBody FoodEntry foodEntry, Authentication authentication) {
 
@@ -32,6 +33,7 @@ public class FoodEntryController {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedEntry);
     }
 
+    // Retrieve Food Entries
     @GetMapping
     public ResponseEntity<?> getFoodEntries(
             Authentication authentication,
@@ -75,6 +77,8 @@ public class FoodEntryController {
         }
     }
 
+
+    //Update Food Entry
     @PutMapping("/{id}")
     public ResponseEntity<?> updateFoodEntry(
             @PathVariable String id,
@@ -89,6 +93,8 @@ public class FoodEntryController {
         }
     }
 
+
+    //Delete Food Entry
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteFoodEntry(@PathVariable String id, Authentication authentication) {
         try {

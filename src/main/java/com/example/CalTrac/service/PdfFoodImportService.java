@@ -25,9 +25,7 @@ public class PdfFoodImportService {
                 private float previousY;
 
                 @Override
-                protected void writeString(
-                        String text, List<TextPosition> positions)
-                        throws IOException {
+                protected void writeString(String text, List<TextPosition> positions) throws IOException {
 
                     for (TextPosition position : positions) {
                         float x = position.getXDirAdj();
@@ -121,39 +119,29 @@ public class PdfFoodImportService {
             FoodEntry entry = new FoodEntry();
             entry.setFoodName(foodName.trim());
 
-            entry.setQuantity(number(value(headers, columns,
-                    "quantity", "servings", "amount"), 1));
+            entry.setQuantity(number(value(headers, columns, "quantity", "servings", "amount"), 1));
 
-            entry.setQuantityUnit(defaultValue(value(headers, columns,
-                    "quantityunit", "unit"), "serving"));
+            entry.setQuantityUnit(defaultValue(value(headers, columns, "quantityunit", "unit"), "serving"));
 
-            entry.setCalories(number(value(headers, columns,
-                    "calories", "kcal", "energy"), 0));
+            entry.setCalories(number(value(headers, columns, "calories", "kcal", "energy"), 0));
 
-            entry.setProtein(number(value(headers, columns,
-                    "protein", "proteing"), 0));
+            entry.setProtein(number(value(headers, columns, "protein", "proteing"), 0));
 
-            entry.setCarbs(number(value(headers, columns,
-                    "carbs", "carbohydrates", "carbohydrateg"), 0));
+            entry.setCarbs(number(value(headers, columns, "carbs", "carbohydrates", "carbohydrateg"), 0));
 
-            entry.setFat(number(value(headers, columns,
-                    "fat", "totalfat", "fatg"), 0));
+            entry.setFat(number(value(headers, columns, "fat", "totalfat", "fatg"), 0));
 
-            entry.setFiber(number(value(headers, columns,
-                    "fiber", "dietaryfiber"), 0));
+            entry.setFiber(number(value(headers, columns, "fiber", "dietaryfiber"), 0));
 
-            entry.setSugar(number(value(headers, columns,
-                    "sugar", "sugars"), 0));
+            entry.setSugar(number(value(headers, columns, "sugar", "sugars"), 0));
 
-            String mealType = value(headers, columns,
-                    "mealtype", "meal", "category");
+            String mealType = value(headers, columns, "mealtype", "meal", "category");
 
             if (mealType != null && !mealType.isBlank()) {
                 entry.setMealType(normalizeMealType(mealType));
             }
 
-            String date = value(headers, columns,
-                    "entrydate", "date", "mealdate");
+            String date = value(headers, columns, "entrydate", "date", "mealdate");
 
             entry.setEntryDate(date == null || date.isBlank()
                     ? LocalDate.now()
@@ -199,8 +187,7 @@ public class PdfFoodImportService {
     }
 
     private String normalize(String value) {
-        return value.toLowerCase(Locale.ROOT)
-                .replaceAll("[^a-z0-9]", "");
+        return value.toLowerCase(Locale.ROOT).replaceAll("[^a-z0-9]", "");
     }
 
     private String normalizeMealType(String value) {

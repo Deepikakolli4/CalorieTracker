@@ -1,4 +1,3 @@
-
 package com.example.CalTrac.service;
 
 import com.example.CalTrac.model.FoodEntry;
@@ -49,8 +48,7 @@ public class FoodEntryService {
         return foodEntryRepository.findByUserIdAndMealType(userId, mealType, pageable);
     }
 
-    public List<FoodEntry> getFoodEntriesByDateRange(
-            String userId, LocalDate startDate, LocalDate endDate) {
+    public List<FoodEntry> getFoodEntriesByDateRange(String userId, LocalDate startDate, LocalDate endDate) {
         validateDateRange(startDate, endDate);
         return foodEntryRepository.findByUserIdAndEntryDateBetween(userId, startDate, endDate);
     }

@@ -36,6 +36,8 @@ public class NutritionExtractionController {
         this.objectMapper = objectMapper;
     }
 
+
+    //Nutrition Extraction
     @PostMapping(value = "/extract", consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
 

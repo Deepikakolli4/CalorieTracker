@@ -35,11 +35,9 @@ public class PdfFoodImportController {
         this.foodEntryRepository = foodEntryRepository;
     }
 
-    @PostMapping(
-            value = "/preview",
-            consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> previewPdf(
-            @RequestParam("file") MultipartFile file) {
+    //PDF Preview
+    @PostMapping(value = "/preview", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> previewPdf(@RequestParam("file") MultipartFile file) {
 
         if (file == null || file.isEmpty()) {
             return ResponseEntity.badRequest()
@@ -76,10 +74,9 @@ public class PdfFoodImportController {
         }
     }
 
+    //Import PDF
     @PostMapping("/import")
-    public ResponseEntity<?> importEntries(
-            @RequestBody List<FoodEntry> entries,
-            Authentication authentication) {
+    public ResponseEntity<?> importEntries(@RequestBody List<FoodEntry> entries, Authentication authentication) {
 
         if (authentication == null
                 || !authentication.isAuthenticated()
@@ -154,8 +151,7 @@ public class PdfFoodImportController {
             entriesToSave.add(entry);
         }
 
-        List<FoodEntry> savedEntries =
-                foodEntryRepository.saveAll(entriesToSave);
+        List<FoodEntry> savedEntries = foodEntryRepository.saveAll(entriesToSave);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
                 "message", "Food entries imported successfully.",

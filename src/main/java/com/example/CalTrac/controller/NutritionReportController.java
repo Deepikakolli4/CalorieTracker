@@ -20,6 +20,8 @@ public class NutritionReportController {
         this.nutritionReportService = nutritionReportService;
     }
 
+
+    //Daily Report
     @GetMapping("/daily")
     public ResponseEntity<Map<String, Object>> getDailySummary(
             @RequestParam
@@ -28,11 +30,12 @@ public class NutritionReportController {
             Authentication authentication) {
 
         Map<String, Object> summary =
-                nutritionReportService.getDailySummary(
-                        authentication.getName(), date);
+                nutritionReportService.getDailySummary(authentication.getName(), date);
 
         return ResponseEntity.ok(summary);
     }
+
+    //Weekly Report
     @GetMapping("/weekly")
     public ResponseEntity<?> getWeeklySummary(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
             LocalDate startDate, Authentication authentication) {

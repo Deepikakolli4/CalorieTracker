@@ -1,4 +1,3 @@
-
 package com.example.CalTrac.service;
 
 import com.google.genai.Client;
@@ -18,10 +17,7 @@ public class GeminiChatService {
             @Value("${gemini.api.key}") String apiKey,
             @Value("${gemini.api.model}") String model) {
 
-        this.geminiClient = Client.builder()
-                .apiKey(apiKey)
-                .build();
-
+        this.geminiClient = Client.builder().apiKey(apiKey).build();
         this.model = model;
     }
 
@@ -94,9 +90,7 @@ public class GeminiChatService {
                 java.time.LocalDate.now()
         );
 
-        Content content = Content.fromParts(
-                Part.fromText(prompt)
-        );
+        Content content = Content.fromParts(Part.fromText(prompt));
 
         GenerateContentConfig config =
                 GenerateContentConfig.builder()

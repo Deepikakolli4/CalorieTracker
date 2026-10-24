@@ -22,8 +22,7 @@ public class HealthGoalController {
     @PostMapping
     public ResponseEntity<?> createGoal(@RequestBody HealthGoal goal, Authentication authentication) {
         try {
-            HealthGoal savedGoal = healthGoalService.createGoal(
-                    authentication.getName(), goal);
+            HealthGoal savedGoal = healthGoalService.createGoal(authentication.getName(), goal);
 
             return ResponseEntity.status(HttpStatus.CREATED).body(savedGoal);
         } catch (IllegalArgumentException e) {

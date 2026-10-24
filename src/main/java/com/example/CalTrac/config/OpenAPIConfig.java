@@ -32,14 +32,10 @@ public class OpenAPIConfig {
                 io.swagger.v3.oas.models.media.Schema<?> userSchema =
                         new io.swagger.v3.oas.models.media.Schema<>()
                                 .type("object")
-                                .addProperty("id",
-                                        new io.swagger.v3.oas.models.media.Schema<>().type("string"))
-                                .addProperty("name",
-                                        new io.swagger.v3.oas.models.media.Schema<>().type("string"))
-                                .addProperty("email",
-                                        new io.swagger.v3.oas.models.media.Schema<>().type("string"))
-                                .addProperty("createdAt",
-                                        new io.swagger.v3.oas.models.media.Schema<>()
+                                .addProperty("id", new io.swagger.v3.oas.models.media.Schema<>().type("string"))
+                                .addProperty("name", new io.swagger.v3.oas.models.media.Schema<>().type("string"))
+                                .addProperty("email", new io.swagger.v3.oas.models.media.Schema<>().type("string"))
+                                .addProperty("createdAt", new io.swagger.v3.oas.models.media.Schema<>()
                                                 .type("string")
                                                 .format("date-time"));
 

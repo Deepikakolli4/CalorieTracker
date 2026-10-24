@@ -25,8 +25,7 @@ public class JwtService {
 
         // Derive a 256-bit key from the configured secret.
         try {
-            byte[] keyBytes = MessageDigest.getInstance("SHA-256")
-                    .digest(secret.getBytes(StandardCharsets.UTF_8));
+            byte[] keyBytes = MessageDigest.getInstance("SHA-256").digest(secret.getBytes(StandardCharsets.UTF_8));
 
             this.signingKey = Keys.hmacShaKeyFor(keyBytes);
         } catch (NoSuchAlgorithmException e) {

@@ -34,16 +34,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             boolean valid = jwtService.isTokenValid(token);
 
-            if (valid
-                    && SecurityContextHolder.getContext()
-                    .getAuthentication() == null) {
+            if (valid && SecurityContextHolder.getContext().getAuthentication() == null) {
 
                 // Extract the authenticated user's ID from the token.
                 String userId = jwtService.extractUserId(token);
 
                 UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(
-                                userId, null, Collections.emptyList());
+                        new UsernamePasswordAuthenticationToken(userId, null, Collections.emptyList());
 
                 authentication.setDetails(
                         new WebAuthenticationDetailsSource().buildDetails(request));

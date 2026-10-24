@@ -1,4 +1,3 @@
-
 package com.example.CalTrac.service;
 
 import com.example.CalTrac.model.User;
@@ -45,7 +44,6 @@ public class UserService {
     //Retrieve User
     public User getUserByEmail(String email) {
         return userRepository.findByEmail(email.trim().toLowerCase())
-                .orElseThrow(() -> new IllegalArgumentException(
-                        "User not found"));
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
     }
 }

@@ -1,4 +1,3 @@
-
 package com.example.CalTrac.controller;
 
 import com.example.CalTrac.model.FoodEntry;
@@ -40,22 +39,20 @@ public class ChatController {
         this.objectMapper = objectMapper;
     }
 
+    //Chat
     @PostMapping
-    public ResponseEntity<?> chat(
-            @RequestBody Map<String, String> request,
-            Authentication authentication) {
+    public ResponseEntity<?> chat(@RequestBody Map<String, String> request, Authentication authentication) {
 
         if (authentication == null || !authentication.isAuthenticated()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(Map.of("error", "Please log in to use CalTrac AI."));
+                    .body(Map.of("error", "Please log in to use Nourish AI."));
         }
 
         String message = request.get("message");
 
         if (message == null || message.isBlank() || message.length() > 4000) {
             return ResponseEntity.badRequest()
-                    .body(Map.of("error",
-                            "Message must contain 1 to 4000 characters."));
+                    .body(Map.of("error", "Message must contain 1 to 4000 characters."));
         }
 
         String userId = authentication.getName();
@@ -81,26 +78,22 @@ public class ChatController {
             String context = chatContextService.buildContext(userId);
             String raw = geminiChatService.generateResponse(message, context);
 
-            Map<String, Object> aiResponse =
-                    objectMapper.readValue(raw, Map.class);
+            Map<String, Object> aiResponse = objectMapper.readValue(raw, Map.class);
 
-            String intent = String.valueOf(
-                    aiResponse.getOrDefault("intent", "QUESTION"));
+            String intent = String.valueOf(aiResponse.getOrDefault("intent", "QUESTION"));
 
             if ("LOG_MEAL".equalsIgnoreCase(intent)) {
 
                 Object dateValue = aiResponse.get("entryDate");
 
-                if (dateValue == null
-                        || String.valueOf(dateValue).isBlank()) {
+                if (dateValue == null || String.valueOf(dateValue).isBlank()) {
                     aiResponse.put("entryDate", LocalDate.now().toString());
                 } else {
                     LocalDate.parse(String.valueOf(dateValue));
                 }
 
                 String foodName = stringValue(aiResponse.get("foodName"));
-                String mealType = normalizeMealType(
-                        stringValue(aiResponse.get("mealType")));
+                String mealType = normalizeMealType(stringValue(aiResponse.get("mealType")));
 
                 if (foodName == null || foodName.isBlank()
                         || mealType == null
@@ -121,8 +114,7 @@ public class ChatController {
                 aiResponse.put("mealType", mealType);
 
                 Map<String, Object> preview = new LinkedHashMap<>();
-                preview.put("reply", aiResponse.getOrDefault(
-                        "reply", "Review the meal details before saving."));
+                preview.put("reply", aiResponse.getOrDefault("reply", "Review the meal details before saving."));
                 preview.put("intent", "LOG_MEAL");
                 preview.put("action", "CREATE_FOOD_ENTRY");
                 preview.put("requiresConfirmation", true);
@@ -136,14 +128,14 @@ public class ChatController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_GATEWAY)
                     .body(Map.of("error",
-                            "CalTrac AI could not process your message."));
+                            "Nourish AI could not process your message."));
         }
     }
 
+
+    //Saving Meal from Chat
     @PostMapping("/confirm-meal")
-    public ResponseEntity<?> confirmMeal(
-            @RequestBody Map<String, Object> request,
-            Authentication authentication) {
+    public ResponseEntity<?> confirmMeal(@RequestBody Map<String, Object> request, Authentication authentication) {
 
         if (authentication == null || !authentication.isAuthenticated()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
@@ -152,13 +144,11 @@ public class ChatController {
 
         try {
             String foodName = stringValue(request.get("foodName"));
-            String mealType = normalizeMealType(
-                    stringValue(request.get("mealType")));
+            String mealType = normalizeMealType(stringValue(request.get("mealType")));
 
             if (foodName == null || foodName.isBlank() || mealType == null) {
                 return ResponseEntity.badRequest()
-                        .body(Map.of("error",
-                                "Valid food name and meal type are required."));
+                        .body(Map.of("error", "Valid food name and meal type are required."));
             }
 
             Double quantity = numberValue(request.get("quantity"));
@@ -219,14 +209,12 @@ public class ChatController {
 
         } catch (Exception e) {
             return ResponseEntity.badRequest()
-                    .body(Map.of("error",
-                            "Invalid meal details or date. Please check your request."));
+                    .body(Map.of("error", "Invalid meal details or date. Please check your request."));
         }
     }
 
     private ResponseEntity<?> getGoals(String userId) {
-        Optional<HealthGoal> optional =
-                healthGoalRepository.findByUserId(userId);
+        Optional<HealthGoal> optional = healthGoalRepository.findByUserId(userId);
 
         if (optional.isEmpty()) {
             return ResponseEntity.ok(Map.of(
@@ -285,8 +273,7 @@ public class ChatController {
             HealthGoal goal = optionalGoal.get();
 
             result.put("dailyCalorieTarget", goal.getDailyCalorieTarget());
-            result.put("caloriesRemaining",
-                    goal.getDailyCalorieTarget() - calories);
+            result.put("caloriesRemaining", goal.getDailyCalorieTarget() - calories);
             result.put("proteinTarget", goal.getProteinTarget());
             result.put("carbsTarget", goal.getCarbsTarget());
             result.put("fatTarget", goal.getFatTarget());
@@ -300,8 +287,7 @@ public class ChatController {
         LocalDate start = today.with(DayOfWeek.MONDAY);
 
         List<FoodEntry> entries =
-                foodEntryRepository.findByUserIdAndEntryDateBetween(
-                        userId, start, today);
+                foodEntryRepository.findByUserIdAndEntryDateBetween(userId, start, today);
 
         double calories = 0;
         double protein = 0;
@@ -331,10 +317,8 @@ public class ChatController {
 
     private ResponseEntity<?> goalProgress(String userId) {
         LocalDate today = LocalDate.now();
-        List<FoodEntry> entries =
-                foodEntryRepository.findByUserIdAndEntryDate(userId, today);
-        Optional<HealthGoal> optional =
-                healthGoalRepository.findByUserId(userId);
+        List<FoodEntry> entries = foodEntryRepository.findByUserIdAndEntryDate(userId, today);
+        Optional<HealthGoal> optional = healthGoalRepository.findByUserId(userId);
 
         if (optional.isEmpty()) {
             return ResponseEntity.ok(Map.of(
@@ -361,8 +345,7 @@ public class ChatController {
         result.put("date", today.toString());
         result.put("caloriesConsumed", calories);
         result.put("calorieTarget", goal.getDailyCalorieTarget());
-        result.put("caloriesRemaining",
-                goal.getDailyCalorieTarget() - calories);
+        result.put("caloriesRemaining", goal.getDailyCalorieTarget() - calories);
         result.put("proteinConsumed", protein);
         result.put("proteinTarget", goal.getProteinTarget());
         result.put("carbsConsumed", carbs);
