@@ -11,16 +11,12 @@ public interface FoodEntryRepository extends MongoRepository<FoodEntry, String> 
 
     List<FoodEntry> findByUserId(String userId);
 
-    List<FoodEntry> findByUserIdAndEntryDate(
-            String userId, LocalDate entryDate);
+    List<FoodEntry> findByUserIdAndEntryDate(String userId, LocalDate entryDate);
 
-    List<FoodEntry> findByUserIdAndMealType(
-            String userId, String mealType);
+    List<FoodEntry> findByUserIdAndMealType(String userId, String mealType);
 
-    List<FoodEntry> findByUserIdAndEntryDateBetween(
-            String userId, LocalDate startDate, LocalDate endDate);
+    List<FoodEntry> findByUserIdAndEntryDateBetween(String userId, LocalDate startDate, LocalDate endDate);
 
     List<FoodEntry> findByUserIdAndMealTypeAndEntryDateBetween(
-            String userId, String mealType,
-            LocalDate startDate, LocalDate endDate);
+            String userId, String mealType, LocalDate startDate, LocalDate endDate);
 }
