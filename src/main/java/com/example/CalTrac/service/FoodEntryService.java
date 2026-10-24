@@ -3,6 +3,8 @@ package com.example.CalTrac.service;
 
 import com.example.CalTrac.model.FoodEntry;
 import com.example.CalTrac.repository.FoodEntryRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -17,75 +19,96 @@ public class FoodEntryService {
         this.foodEntryRepository = foodEntryRepository;
     }
 
-    // Create a food entry
-    public FoodEntry createFoodEntry(FoodEntry foodEntry) {
+    public FoodEntry createFoodEntry(String userId, FoodEntry foodEntry) {
         foodEntry.setId(null);
+        foodEntry.setUserId(userId);
         return foodEntryRepository.save(foodEntry);
     }
 
-    // Get all food entries for a user
     public List<FoodEntry> getFoodEntries(String userId) {
         return foodEntryRepository.findByUserId(userId);
     }
 
-    // Get food entries for a particular date
+    public Page<FoodEntry> getFoodEntries(String userId, Pageable pageable) {
+        return foodEntryRepository.findByUserId(userId, pageable);
+    }
+
     public List<FoodEntry> getFoodEntriesByDate(String userId, LocalDate date) {
         return foodEntryRepository.findByUserIdAndEntryDate(userId, date);
     }
 
-    // Get food entries for a meal type
+    public Page<FoodEntry> getFoodEntriesByDate(String userId, LocalDate date, Pageable pageable) {
+        return foodEntryRepository.findByUserIdAndEntryDate(userId, date, pageable);
+    }
+
     public List<FoodEntry> getFoodEntriesByMealType(String userId, String mealType) {
         return foodEntryRepository.findByUserIdAndMealType(userId, mealType);
     }
 
-    // Get food entries between two dates
-    public List<FoodEntry> getFoodEntriesByDateRange(String userId, LocalDate startDate, LocalDate endDate) {
-        if (startDate.isAfter(endDate)) {
-            throw new IllegalArgumentException(
-                    "Start date cannot be after end date");
-        }
-        return foodEntryRepository.findByUserIdAndEntryDateBetween(
-                userId, startDate, endDate);
+    public Page<FoodEntry> getFoodEntriesByMealType(String userId, String mealType, Pageable pageable) {
+        return foodEntryRepository.findByUserIdAndMealType(userId, mealType, pageable);
     }
 
-    // Get food entries by meal type and date range
-    public List<FoodEntry> getFoodEntriesByMealAndDateRange(String userId, String mealType,
-                                                            LocalDate startDate, LocalDate endDate) {
+    public List<FoodEntry> getFoodEntriesByDateRange(
+            String userId, LocalDate startDate, LocalDate endDate) {
+        validateDateRange(startDate, endDate);
+        return foodEntryRepository.findByUserIdAndEntryDateBetween(userId, startDate, endDate);
+    }
 
-        if (startDate.isAfter(endDate)) {
-            throw new IllegalArgumentException(
-                    "Start date cannot be after end date");
-        }
+    public Page<FoodEntry> getFoodEntriesByDateRange(
+            String userId, LocalDate startDate, LocalDate endDate, Pageable pageable) {
+        validateDateRange(startDate, endDate);
+        return foodEntryRepository.findByUserIdAndEntryDateBetween(userId, startDate, endDate, pageable);
+    }
 
+    public List<FoodEntry> getFoodEntriesByMealAndDateRange(
+            String userId, String mealType, LocalDate startDate, LocalDate endDate) {
+        validateDateRange(startDate, endDate);
         return foodEntryRepository
-                .findByUserIdAndMealTypeAndEntryDateBetween(
-                        userId, mealType, startDate, endDate);
+                .findByUserIdAndMealTypeAndEntryDateBetween(userId, mealType, startDate, endDate);
     }
 
-    // Update an existing food entry
+    public Page<FoodEntry> getFoodEntriesByMealAndDateRange(
+            String userId, String mealType, LocalDate startDate, LocalDate endDate, Pageable pageable) {
+        validateDateRange(startDate, endDate);
+        return foodEntryRepository
+                .findByUserIdAndMealTypeAndEntryDateBetween(userId, mealType, startDate, endDate, pageable);
+    }
+
     public FoodEntry updateFoodEntry(String id, String userId, FoodEntry updatedEntry) {
         FoodEntry existingEntry = foodEntryRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException(
-                        "Food entry not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Food entry not found"));
 
-        if (!existingEntry.getUserId().equals(userId)) {
-            throw new IllegalArgumentException(
-                    "You cannot update another user's food entry");
-        }
+        checkOwnership(existingEntry, userId);
+
         updatedEntry.setId(id);
         updatedEntry.setUserId(userId);
+        updatedEntry.setCreatedAt(existingEntry.getCreatedAt());
+
         return foodEntryRepository.save(updatedEntry);
     }
 
-    // Delete a food entry
     public void deleteFoodEntry(String id, String userId) {
         FoodEntry existingEntry = foodEntryRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException(
-                        "Food entry not found"));
-        if (!existingEntry.getUserId().equals(userId)) {
-            throw new IllegalArgumentException(
-                    "You cannot delete another user's food entry");
+                .orElseThrow(() -> new IllegalArgumentException("Food entry not found"));
+
+        checkOwnership(existingEntry, userId);
+        foodEntryRepository.delete(existingEntry);
+    }
+
+    private void checkOwnership(FoodEntry entry, String userId) {
+        if (!userId.equals(entry.getUserId())) {
+            throw new IllegalArgumentException("You cannot access another user's food entry");
         }
-        foodEntryRepository.deleteById(id);
+    }
+
+    private void validateDateRange(LocalDate startDate, LocalDate endDate) {
+        if (startDate == null || endDate == null) {
+            throw new IllegalArgumentException("Start date and end date are required");
+        }
+
+        if (startDate.isAfter(endDate)) {
+            throw new IllegalArgumentException("Start date cannot be after end date");
+        }
     }
 }

@@ -1,4 +1,3 @@
-
 package com.example.CalTrac.model;
 
 import org.springframework.data.annotation.Id;

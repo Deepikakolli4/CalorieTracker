@@ -32,8 +32,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (header != null && header.startsWith("Bearer ")) {
             String token = header.substring(7);
 
-            // Validate the token and check existing authentication.
-            if (jwtService.isTokenValid(token)
+            boolean valid = jwtService.isTokenValid(token);
+
+            if (valid
                     && SecurityContextHolder.getContext()
                     .getAuthentication() == null) {
 

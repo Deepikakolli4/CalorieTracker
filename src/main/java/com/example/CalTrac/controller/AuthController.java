@@ -1,4 +1,4 @@
-package com.example.CalTrac.controller.Auth;
+package com.example.CalTrac.controller;
 
 import com.example.CalTrac.model.User;
 import com.example.CalTrac.service.UserService;

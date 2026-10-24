@@ -81,6 +81,20 @@
 			<version>0.12.6</version>
 			<scope>runtime</scope>
 		</dependency>
+
+		<!-- gemini key -->
+		<dependency>
+			<groupId>com.google.genai</groupId>
+			<artifactId>google-genai</artifactId>
+			<version>1.79.0</version>
+		</dependency>
+
+		<!-- pdf extraction -->
+		<dependency>
+			<groupId>org.apache.pdfbox</groupId>
+			<artifactId>pdfbox</artifactId>
+			<version>3.0.6</version>
+		</dependency>
 	</dependencies>
 
 	<build>

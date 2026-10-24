@@ -2,6 +2,8 @@
 package com.example.CalTrac.repository;
 
 import com.example.CalTrac.model.FoodEntry;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.time.LocalDate;
@@ -19,4 +21,17 @@ public interface FoodEntryRepository extends MongoRepository<FoodEntry, String> 
 
     List<FoodEntry> findByUserIdAndMealTypeAndEntryDateBetween(
             String userId, String mealType, LocalDate startDate, LocalDate endDate);
+
+    Page<FoodEntry> findByUserId(String userId, Pageable pageable);
+
+    Page<FoodEntry> findByUserIdAndEntryDate(String userId, LocalDate entryDate, Pageable pageable);
+
+    Page<FoodEntry> findByUserIdAndMealType(String userId, String mealType, Pageable pageable);
+
+    Page<FoodEntry> findByUserIdAndEntryDateBetween(
+            String userId, LocalDate startDate, LocalDate endDate, Pageable pageable);
+
+    Page<FoodEntry> findByUserIdAndMealTypeAndEntryDateBetween(
+            String userId, String mealType, LocalDate startDate,
+            LocalDate endDate, Pageable pageable);
 }
